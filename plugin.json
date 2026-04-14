@@ -1,0 +1,86 @@
+{
+  "id": "azure-devops",
+  "name": "Azure DevOps",
+  "version": "0.1.0",
+  "sdkVersion": 2,
+  "description": "Azure DevOps: work items, iterations, teams, velocity, areas, activity, AB# auto-linking",
+  "icon": "kanban",
+  "tint": "0, 120, 215",
+  "instructions": "instructions.md",
+  "aiKeywords": [
+    "azure devops", "ado", "work item", "workitems", "backlog", "sprint",
+    "iteration", "velocity", "burndown", "team capacity", "team", "area path",
+    "user story", "bug", "task", "feature", "epic", "standup", "retro", "retrospective",
+    "AB#", "ab-reference"
+  ],
+  "activationConditions": { "always": true },
+  "bundled": true,
+  "settings": [],
+  "contributions": {
+    "nativeSettings": {
+      "targetId": "settingsTab-ado"
+    },
+    "centerTabs": [
+      {
+        "id": "ado-backlog",
+        "label": "Backlog",
+        "icon": "layout-list",
+        "html": "ui/backlog.html"
+      },
+      {
+        "id": "ado-work-item",
+        "label": "Work Item",
+        "icon": "ticket",
+        "html": "ui/work-item.html"
+      }
+    ],
+    "rightTabs": [
+      {
+        "id": "ado-teams",
+        "label": "Teams",
+        "icon": "users",
+        "html": "ui/teams.html"
+      },
+      {
+        "id": "ado-activity",
+        "label": "Activity",
+        "icon": "activity",
+        "html": "ui/activity.html"
+      }
+    ],
+    "leftQuickActions": [
+      { "id": "ado-new-item", "label": "New Item", "icon": "plus", "command": "ado.newItem" },
+      { "id": "ado-my-items", "label": "My Items", "icon": "user", "command": "ado.myItems" },
+      { "id": "ado-refresh", "label": "Refresh", "icon": "refresh-cw", "command": "ado.refresh" }
+    ],
+    "aiActions": [
+      { "id": "standup-summary", "label": "Standup Summary", "icon": "megaphone", "intent": "quick-summary", "prompt": "Generate a standup summary for the current iteration." },
+      { "id": "iteration-status", "label": "Iteration Status", "icon": "calendar-check", "intent": "quick-summary", "prompt": "Report iteration health: burndown trajectory, risks, blockers, stories at risk." },
+      { "id": "retrospective", "label": "Retrospective", "icon": "repeat", "intent": "deep-code", "prompt": "Run a retrospective across the last iteration: what went well, what to improve, action items." }
+    ],
+    "commitLinkers": [
+      {
+        "id": "ab-ref",
+        "pattern": "AB#(\\d+)",
+        "urlTemplate": "{adoOrgUrl}/_workitems/edit/{1}",
+        "note": "Auto-links AB#<id> in commit messages and branch names to the corresponding ADO work item"
+      }
+    ],
+    "workItemProvider": {
+      "id": "azure-devops",
+      "label": "Azure DevOps",
+      "listRoute": "/api/workitems",
+      "createRoute": "/api/workitems/create",
+      "getRoute": "/api/workitems/:id",
+      "updateStateRoute": "/api/workitems/:id/state",
+      "commentRoute": "/api/workitems/:id/comments",
+      "iterationsRoute": "/api/iterations",
+      "teamsRoute": "/api/teams",
+      "teamMembersRoute": "/api/team-members",
+      "areasRoute": "/api/areas",
+      "velocityRoute": "/api/velocity",
+      "burndownRoute": "/api/burndown",
+      "startWorkingRoute": "/api/start-working"
+    }
+  }
+}
