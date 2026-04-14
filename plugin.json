@@ -1,7 +1,7 @@
 {
   "id": "azure-devops",
   "name": "Azure DevOps",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "sdkVersion": 2,
   "description": "Azure DevOps: work items, iterations, teams, velocity, areas, activity, AB# auto-linking",
   "icon": "kanban",
@@ -37,22 +37,25 @@
         "id": "standup-summary",
         "label": "Standup Summary",
         "icon": "message-square",
+        "requires": ["sprint"],
         "script": "scripts/Get-StandupSummary.ps1",
-        "analyze": "give a brief analysis of the standup for the current iteration. What should we focus on today?"
+        "args": "-IterationPath '${sprint}'",
+        "analyze": "give me a brief analysis of the standup for \"${sprintName}\". What should we focus on today?"
       },
       {
         "id": "iteration-status",
         "label": "Iteration Status",
         "icon": "bar-chart-2",
+        "requires": ["sprint"],
         "script": "scripts/Get-SprintStatus.ps1",
-        "analyze": "analyze the results. Are we on track? Any concerns?"
+        "analyze": "analyze the results. Are we on track for \"${sprintName}\"? Any concerns?"
       },
       {
         "id": "retrospective",
         "label": "Retrospective",
         "icon": "rotate-ccw",
         "script": "scripts/Get-Retrospective.ps1",
-        "analyze": "give a retrospective analysis. What went well? What can we improve?"
+        "analyze": "give me a retrospective analysis. What went well? What can we improve?"
       }
     ],
     "commitLinkers": [
