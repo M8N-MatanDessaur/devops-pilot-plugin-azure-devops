@@ -1,7 +1,7 @@
 {
   "id": "azure-devops",
   "name": "Azure DevOps",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "sdkVersion": 2,
   "description": "Azure DevOps: work items, iterations, teams, velocity, areas, activity, AB# auto-linking",
   "icon": "kanban",
@@ -13,45 +13,15 @@
     "user story", "bug", "task", "feature", "epic", "standup", "retro", "retrospective",
     "AB#", "ab-reference"
   ],
-  "activationConditions": { "always": true },
-  "bundled": true,
+  "activationConditions": { "configKeys": ["AzureDevOpsOrg", "AzureDevOpsProject", "AzureDevOpsPAT"] },
   "settings": [],
   "contributions": {
     "nativeSettings": {
       "targetId": "settingsTab-ado"
     },
-    "centerTabs": [
-      {
-        "id": "ado-backlog",
-        "label": "Backlog",
-        "icon": "layout-list",
-        "html": "ui/backlog.html"
-      },
-      {
-        "id": "ado-work-item",
-        "label": "Work Item",
-        "icon": "ticket",
-        "html": "ui/work-item.html"
-      }
-    ],
-    "rightTabs": [
-      {
-        "id": "ado-teams",
-        "label": "Teams",
-        "icon": "users",
-        "html": "ui/teams.html"
-      },
-      {
-        "id": "ado-activity",
-        "label": "Activity",
-        "icon": "activity",
-        "html": "ui/activity.html"
-      }
-    ],
     "leftQuickActions": [
       { "id": "ado-new-item", "label": "New Item", "icon": "plus", "command": "ado.newItem" },
-      { "id": "ado-my-items", "label": "My Items", "icon": "user", "command": "ado.myItems" },
-      { "id": "ado-refresh", "label": "Refresh", "icon": "refresh-cw", "command": "ado.refresh" }
+      { "id": "ado-my-items", "label": "My Items", "icon": "user", "command": "ado.myItems" }
     ],
     "aiActions": [
       { "id": "standup-summary", "label": "Standup Summary", "icon": "megaphone", "intent": "quick-summary", "prompt": "Generate a standup summary for the current iteration." },
