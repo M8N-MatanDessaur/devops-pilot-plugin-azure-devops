@@ -1,7 +1,7 @@
 {
   "id": "azure-devops",
   "name": "Azure DevOps",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "sdkVersion": 2,
   "description": "Azure DevOps: work items, iterations, teams, velocity, areas, activity, AB# auto-linking",
   "icon": "kanban",
@@ -29,13 +29,31 @@
       { "tabBtnId": "intelTab-team",     "panelId": "ipanel-team" }
     ],
     "leftQuickActions": [
-      { "id": "ado-new-item", "label": "New Item", "icon": "plus", "command": "ado.newItem" },
-      { "id": "ado-my-items", "label": "My Items", "icon": "user", "command": "ado.myItems" }
+      { "id": "ado-new-item", "label": "New Work Item", "icon": "plus", "command": "openCreateModal" },
+      { "id": "ado-my-items", "label": "My Items",      "icon": "user", "command": "filterMyItems"  }
     ],
     "aiActions": [
-      { "id": "standup-summary", "label": "Standup Summary", "icon": "megaphone", "intent": "quick-summary", "prompt": "Generate a standup summary for the current iteration." },
-      { "id": "iteration-status", "label": "Iteration Status", "icon": "calendar-check", "intent": "quick-summary", "prompt": "Report iteration health: burndown trajectory, risks, blockers, stories at risk." },
-      { "id": "retrospective", "label": "Retrospective", "icon": "repeat", "intent": "deep-code", "prompt": "Run a retrospective across the last iteration: what went well, what to improve, action items." }
+      {
+        "id": "standup-summary",
+        "label": "Standup Summary",
+        "icon": "message-square",
+        "script": "scripts/Get-StandupSummary.ps1",
+        "analyze": "give a brief analysis of the standup for the current iteration. What should we focus on today?"
+      },
+      {
+        "id": "iteration-status",
+        "label": "Iteration Status",
+        "icon": "bar-chart-2",
+        "script": "scripts/Get-SprintStatus.ps1",
+        "analyze": "analyze the results. Are we on track? Any concerns?"
+      },
+      {
+        "id": "retrospective",
+        "label": "Retrospective",
+        "icon": "rotate-ccw",
+        "script": "scripts/Get-Retrospective.ps1",
+        "analyze": "give a retrospective analysis. What went well? What can we improve?"
+      }
     ],
     "commitLinkers": [
       {
