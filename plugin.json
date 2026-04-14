@@ -1,7 +1,7 @@
 {
   "id": "azure-devops",
   "name": "Azure DevOps",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "sdkVersion": 2,
   "description": "Azure DevOps: work items, iterations, teams, velocity, areas, activity, AB# auto-linking",
   "icon": "kanban",
@@ -19,6 +19,15 @@
     "nativeSettings": {
       "targetId": "settingsTab-ado"
     },
+    "nativeTabs": [
+      { "tabBtnId": "backlogTabBtn",  "panelId": "panel-backlog",  "openable": true  },
+      { "tabBtnId": "workitemTabBtn", "panelId": "panel-workitem", "openable": false },
+      { "tabBtnId": "activityTabBtn", "panelId": "panel-activity", "openable": true  }
+    ],
+    "nativeRightTabs": [
+      { "tabBtnId": "intelTab-activity", "panelId": "ipanel-activity" },
+      { "tabBtnId": "intelTab-team",     "panelId": "ipanel-team" }
+    ],
     "leftQuickActions": [
       { "id": "ado-new-item", "label": "New Item", "icon": "plus", "command": "ado.newItem" },
       { "id": "ado-my-items", "label": "My Items", "icon": "user", "command": "ado.myItems" }
