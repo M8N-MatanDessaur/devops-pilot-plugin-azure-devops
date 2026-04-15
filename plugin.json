@@ -1,7 +1,7 @@
 {
   "id": "azure-devops",
   "name": "Azure DevOps",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "sdkVersion": 2,
   "description": "Azure DevOps: work items, iterations, teams, velocity, areas, activity, AB# auto-linking",
   "icon": "kanban",
@@ -16,6 +16,7 @@
   "activationConditions": { "configKeys": ["AzureDevOpsOrg", "AzureDevOpsProject", "AzureDevOpsPAT"] },
   "settings": [],
   "contributions": {
+    "routes": "routes.js",
     "nativeSettings": {
       "targetId": "settingsTab-ado"
     },
