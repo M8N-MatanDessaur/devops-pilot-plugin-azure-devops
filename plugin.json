@@ -1,7 +1,7 @@
 {
   "id": "azure-devops",
   "name": "Azure DevOps",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "sdkVersion": 2,
   "description": "Azure DevOps: work items, iterations, teams, velocity, areas, activity, AB# auto-linking",
   "icon": "kanban",
@@ -82,20 +82,6 @@
         "tabBtnId": "activityTabBtn",
         "panelId": "panel-activity",
         "openable": false
-      }
-    ],
-    "rightTabs": [
-      {
-        "id": "activity",
-        "label": "Activity",
-        "icon": "activity",
-        "html": "ui/activity.html"
-      },
-      {
-        "id": "team",
-        "label": "Team",
-        "icon": "users",
-        "html": "ui/team.html"
       }
     ],
     "leftQuickActions": [
@@ -295,6 +281,16 @@
           "route": "GET /api/workitems"
         }
       ]
-    }
+    },
+    "legacyNativeRightTabs": [
+      {
+        "tabBtnId": "intelTab-activity",
+        "panelId": "ipanel-activity"
+      },
+      {
+        "tabBtnId": "intelTab-team",
+        "panelId": "ipanel-team"
+      }
+    ]
   }
 }
