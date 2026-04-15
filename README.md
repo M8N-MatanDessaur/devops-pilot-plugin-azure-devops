@@ -18,11 +18,11 @@ Integrates Azure DevOps into DevOps Pilot: work items, iterations, teams, veloci
 - `leftQuickActions: New Item, My Items, Refresh`.
 - `aiActions: Standup Summary, Iteration Status, Retrospective`.
 - `commitLinkers` -- auto-links `AB#<id>` in commit messages and branch names.
-- `nativeSettings` -- claims the Azure DevOps settings block.
+- `configKeys` / `sensitiveKeys` -- keep Azure DevOps config in this plugin's `config.json` and scrub PATs from exports.
 
 ## Routes
 
-During the Phase 3 extraction the HTTP handlers still live in core DevOps Pilot under `/api/workitems/*`, `/api/iterations`, `/api/teams`, etc. The manifest points at those absolute paths. A future release will move the handlers into this plugin's `routes.js`.
+The HTTP handlers live in this plugin's `routes.js`. Legacy `/api/workitems/*`, `/api/iterations`, `/api/teams`, and related paths are still registered so older UI code and scripts keep working.
 
 ## Uninstall
 

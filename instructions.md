@@ -2,9 +2,9 @@
 
 The Azure DevOps plugin owns every interaction with dev.azure.com in DevOps Pilot: work item tracking, sprints and iterations, velocity, teams, area paths, burndown, and AB# auto-linking.
 
-## Phase 2/3 extraction state
+## Extraction state
 
-During extraction the handlers still live in `dashboard/server.js`. The manifest uses absolute route paths under `/api/workitems/*`, `/api/iterations`, etc. Phase 3b moves the implementations into this plugin's `routes.js` and flips the manifest paths to relative.
+The HTTP handlers live in this plugin's `routes.js`. The manifest keeps the legacy absolute paths under `/api/workitems/*`, `/api/iterations`, etc. so existing UI, scripts, and AI routes keep working while ownership is plugin-based.
 
 ## Routes described by the manifest
 
@@ -26,16 +26,15 @@ During extraction the handlers still live in `dashboard/server.js`. The manifest
 ## Contributions
 
 - `workItemProvider` exposes the full work-item surface so the future provider-agnostic Backlog tab renders ADO via the same interface Jira/Wrike plugins will implement.
-- `centerTabs` contributes the Backlog and Work Item tabs.
-- `rightTabs` contributes Teams and Activity sidebars.
+- `workItemProvider` and plugin-owned routes drive the Backlog, Work Item, Activity, Teams, Velocity, and Burndown surfaces.
 - `leftQuickActions` contributes "New Item", "My Items", "Refresh".
 - `aiActions` contributes the "Standup Summary", "Iteration Status", and "Retrospective" quick AI actions.
 - `commitLinkers` registers the `AB#<id>` auto-link resolver.
-- `settingsHtml` will host the ADO org URL, PAT, default team, and default area path fields in Phase 3b.
+- `configKeys`, `sensitiveKeys`, and `imageAuth` declare this plugin's config ownership, secret scrubbing, and authenticated image hosts.
 
 ## Configuration
 
-Reads `ADO_Organization`, `ADO_Project`, `ADO_PAT`, `DefaultTeam`, `DefaultArea` from the global app config. When the config pane moves into this plugin it will continue to write to the same keys.
+Reads `AzureDevOpsOrg`, `AzureDevOpsProject`, `AzureDevOpsProjects`, `AzureDevOpsPAT`, `DefaultTeam`, and `DefaultArea`. These keys are persisted in `dashboard/plugins/azure-devops/config.json` and merged into `/api/config` for backward compatibility.
 
 ## AB# auto-link
 
