@@ -1,19 +1,43 @@
 {
   "id": "azure-devops",
   "name": "Azure DevOps",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "sdkVersion": 2,
   "description": "Azure DevOps: work items, iterations, teams, velocity, areas, activity, AB# auto-linking",
   "icon": "kanban",
   "tint": "0, 120, 215",
   "instructions": "instructions.md",
   "aiKeywords": [
-    "azure devops", "ado", "work item", "workitems", "backlog", "sprint",
-    "iteration", "velocity", "burndown", "team capacity", "team", "area path",
-    "user story", "bug", "task", "feature", "epic", "standup", "retro", "retrospective",
-    "AB#", "ab-reference"
+    "azure devops",
+    "ado",
+    "work item",
+    "workitems",
+    "backlog",
+    "sprint",
+    "iteration",
+    "velocity",
+    "burndown",
+    "team capacity",
+    "team",
+    "area path",
+    "user story",
+    "bug",
+    "task",
+    "feature",
+    "epic",
+    "standup",
+    "retro",
+    "retrospective",
+    "AB#",
+    "ab-reference"
   ],
-  "activationConditions": { "configKeys": ["AzureDevOpsOrg", "AzureDevOpsProject", "AzureDevOpsPAT"] },
+  "activationConditions": {
+    "configKeys": [
+      "AzureDevOpsOrg",
+      "AzureDevOpsProject",
+      "AzureDevOpsPAT"
+    ]
+  },
   "settings": [],
   "contributions": {
     "routes": "routes.js",
@@ -21,24 +45,54 @@
       "targetId": "settingsTab-ado"
     },
     "nativeTabs": [
-      { "tabBtnId": "backlogTabBtn",  "panelId": "panel-backlog",  "openable": true  },
-      { "tabBtnId": "workitemTabBtn", "panelId": "panel-workitem", "openable": false },
-      { "tabBtnId": "activityTabBtn", "panelId": "panel-activity", "openable": false }
+      {
+        "tabBtnId": "backlogTabBtn",
+        "panelId": "panel-backlog",
+        "openable": true
+      },
+      {
+        "tabBtnId": "workitemTabBtn",
+        "panelId": "panel-workitem",
+        "openable": false
+      },
+      {
+        "tabBtnId": "activityTabBtn",
+        "panelId": "panel-activity",
+        "openable": false
+      }
     ],
     "nativeRightTabs": [
-      { "tabBtnId": "intelTab-activity", "panelId": "ipanel-activity" },
-      { "tabBtnId": "intelTab-team",     "panelId": "ipanel-team" }
+      {
+        "tabBtnId": "intelTab-activity",
+        "panelId": "ipanel-activity"
+      },
+      {
+        "tabBtnId": "intelTab-team",
+        "panelId": "ipanel-team"
+      }
     ],
     "leftQuickActions": [
-      { "id": "ado-new-item", "label": "New Work Item", "icon": "plus", "command": "openCreateModal" },
-      { "id": "ado-my-items", "label": "My Items",      "icon": "user", "command": "filterMyItems"  }
+      {
+        "id": "ado-new-item",
+        "label": "New Work Item",
+        "icon": "plus",
+        "command": "openCreateModal"
+      },
+      {
+        "id": "ado-my-items",
+        "label": "My Items",
+        "icon": "user",
+        "command": "filterMyItems"
+      }
     ],
     "aiActions": [
       {
         "id": "standup-summary",
         "label": "Standup Summary",
         "icon": "message-square",
-        "requires": ["sprint"],
+        "requires": [
+          "sprint"
+        ],
         "script": "scripts/Get-StandupSummary.ps1",
         "args": "-IterationPath '${sprint}'",
         "analyze": "give me a brief analysis of the standup for \"${sprintName}\". What should we focus on today?"
@@ -47,7 +101,9 @@
         "id": "iteration-status",
         "label": "Iteration Status",
         "icon": "bar-chart-2",
-        "requires": ["sprint"],
+        "requires": [
+          "sprint"
+        ],
         "script": "scripts/Get-SprintStatus.ps1",
         "analyze": "analyze the results. Are we on track for \"${sprintName}\"? Any concerns?"
       },
@@ -82,6 +138,16 @@
       "velocityRoute": "/api/velocity",
       "burndownRoute": "/api/burndown",
       "startWorkingRoute": "/api/start-working"
-    }
+    },
+    "sensitiveKeys": [
+      "AzureDevOpsPAT"
+    ],
+    "imageAuth": [
+      {
+        "hostnamePattern": "dev.azure.com",
+        "authType": "basic-pat",
+        "authConfigKey": "AzureDevOpsPAT"
+      }
+    ]
   }
 }
