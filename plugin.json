@@ -67,21 +67,31 @@
     "nativeSettings": {
       "targetId": "settingsTab-ado"
     },
-    "legacyNativeTabs": [
+    "centerTabs": [
       {
-        "tabBtnId": "backlogTabBtn",
-        "panelId": "panel-backlog",
+        "id": "backlog",
+        "label": "Backlog",
+        "icon": "list-todo",
+        "pinned": true,
+        "position": 2,
+        "claims": { "tabBtnId": "backlogTabBtn", "panelId": "panel-backlog" },
         "openable": true
       },
       {
-        "tabBtnId": "workitemTabBtn",
-        "panelId": "panel-workitem",
-        "openable": false
+        "id": "workitem",
+        "label": "Work Item",
+        "icon": "ticket",
+        "popup": true,
+        "position": 3,
+        "claims": { "tabBtnId": "workitemTabBtn", "panelId": "panel-workitem" }
       },
       {
-        "tabBtnId": "activityTabBtn",
-        "panelId": "panel-activity",
-        "openable": false
+        "id": "activity",
+        "label": "Activity Timeline",
+        "icon": "activity",
+        "popup": true,
+        "position": 5,
+        "claims": { "tabBtnId": "activityTabBtn", "panelId": "panel-activity" }
       }
     ],
     "leftQuickActions": [
@@ -282,14 +292,20 @@
         }
       ]
     },
-    "legacyNativeRightTabs": [
+    "rightTabs": [
       {
-        "tabBtnId": "intelTab-activity",
-        "panelId": "ipanel-activity"
+        "id": "activity",
+        "label": "Activity",
+        "pinned": true,
+        "position": 0,
+        "claims": { "tabBtnId": "intelTab-activity", "panelId": "ipanel-activity" }
       },
       {
-        "tabBtnId": "intelTab-team",
-        "panelId": "ipanel-team"
+        "id": "team",
+        "label": "Team",
+        "pinned": true,
+        "position": 1,
+        "claims": { "tabBtnId": "intelTab-team", "panelId": "ipanel-team" }
       }
     ]
   }

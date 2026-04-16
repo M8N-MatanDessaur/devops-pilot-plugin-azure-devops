@@ -1,6 +1,6 @@
 # Azure DevOps Plugin
 
-The Azure DevOps plugin owns every interaction with dev.azure.com in DevOps Pilot: work item tracking, sprints and iterations, velocity, teams, area paths, burndown, and AB# auto-linking.
+The Azure DevOps plugin owns every interaction with dev.azure.com in Symphonee: work item tracking, sprints and iterations, velocity, teams, area paths, burndown, and AB# auto-linking.
 
 ## Extraction state
 

@@ -1,14 +1,14 @@
-# Azure DevOps Plugin for DevOps Pilot
+# Azure DevOps Plugin for Symphonee
 
-Integrates Azure DevOps into DevOps Pilot: work items, iterations, teams, velocity, burndown, and `AB#` commit auto-linking.
+Integrates Azure DevOps into Symphonee: work items, iterations, teams, velocity, burndown, and `AB#` commit auto-linking.
 
 ## Installation
 
-1. Clone into your DevOps Pilot plugins folder:
+1. Clone into your Symphonee plugins folder:
    ```
-   git clone https://github.com/M8N-MatanDessaur/devops-pilot-plugin-azure-devops.git dashboard/plugins/azure-devops
+   git clone https://github.com/M8N-MatanDessaur/symphonee-plugin-azure-devops.git dashboard/plugins/azure-devops
    ```
-2. Restart DevOps Pilot.
+2. Restart Symphonee.
 3. Open **Settings -> Plugins -> Azure DevOps** and fill in your org, project, PAT, and default team.
 
 ## What it contributes
