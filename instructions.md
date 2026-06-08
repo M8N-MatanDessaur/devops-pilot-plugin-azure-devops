@@ -11,9 +11,11 @@ The HTTP handlers live in this plugin's `routes.js`. The manifest keeps the lega
 | Surface              | Current path                              | Purpose                                 |
 |----------------------|-------------------------------------------|-----------------------------------------|
 | List work items      | `GET /api/workitems`                      | Backlog / My Items / Iteration views    |
-| Create work item     | `POST /api/workitems/create`              | Gated                                   |
+| Create work item     | `POST /api/workitems/create`              | Gated. Accepts `parent` to nest under a story |
 | Get work item        | `GET /api/workitems/:id`                  | Detail view                             |
+| Update work item     | `PATCH /api/workitems/:id`                | Gated. Fields + `parent` (re-parents)   |
 | Change state         | `PATCH /api/workitems/:id/state`          | Gated                                   |
+| Set parent           | `POST /api/workitems/:id/parent`          | Gated. Nest under a parent (Hierarchy)  |
 | Comment              | `POST /api/workitems/:id/comments`        | Gated                                   |
 | Iterations           | `GET /api/iterations`                     | Iteration selector                      |
 | Teams                | `GET /api/teams`                          | Teams sidebar                           |
@@ -52,6 +54,7 @@ When creating work items through this plugin, ALWAYS include:
 4. **Priority** -- default to 2 (Normal) unless specified
 5. **Acceptance Criteria** -- for features / user stories; skip for small bugs
 6. **Iteration** -- use `selectedIteration` from `/api/ui/context`; if null ("All Iterations"), leave `iterationPath` empty; NEVER assume the current sprint
+7. **Parent** -- when creating a child Task/Bug under a User Story/Feature, pass `parent` (the parent work item id) so it nests correctly. To re-parent an existing item, `POST /api/workitems/:id/parent` with `{ "parent": <id> }` (or `PATCH /api/workitems/:id` with a `parent` field). Any existing parent is replaced.
 
 ### State transitions
 
@@ -86,8 +89,9 @@ Under `./dashboard/plugins/azure-devops/scripts/`:
 | `Get-StandupSummary.ps1 -IterationPath '...'` | Standup of recent changes |
 | `Get-Retrospective.ps1` | Last completed sprint analysis |
 | `Get-WorkItem.ps1 -Id <id>` | Full work item detail |
-| `New-WorkItem.ps1 -Type '...' -Title '...' -Priority <n> -StoryPoints <n>` | Create a work item |
+| `New-WorkItem.ps1 -Type '...' -Title '...' -Priority <n> -StoryPoints <n> [-Parent <id>] [-IterationPath '...'] [-AreaPath '...']` | Create a work item (optionally nested under a parent) |
 | `Set-WorkItemState.ps1 -Id <id> -State <state>` | Change work item state |
+| `Set-WorkItemParent.ps1 -Id <id> -Parent <id>` | Nest a work item under a parent (Hierarchy link) |
 | `Find-WorkItems.ps1 -Search '...' -Type '...' -State '...'` | Filter work items |
 | `Get-MyWorkItems.ps1 [-State <state>]` | My items grouped by state |
 | `Refresh-Board.ps1` | Refresh backlog / board view |

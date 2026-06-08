@@ -12,6 +12,9 @@ param(
     [string]$Tags = "",
     [double]$StoryPoints = 0,
     [string]$AcceptanceCriteria = "",
+    [string]$IterationPath = "",
+    [string]$AreaPath = "",
+    [int]$Parent = 0,
     [string]$ApiBase = "http://127.0.0.1:3800"
 )
 
@@ -20,18 +23,22 @@ $body = @{
     title = $Title
 }
 
-if ($Description)       { $body.description = $Description }
-if ($Priority)          { $body.priority = $Priority }
-if ($AssignedTo)        { $body.assignedTo = $AssignedTo }
-if ($Tags)              { $body.tags = $Tags }
-if ($StoryPoints -gt 0) { $body.storyPoints = $StoryPoints }
+if ($Description)        { $body.description = $Description }
+if ($Priority)           { $body.priority = $Priority }
+if ($AssignedTo)         { $body.assignedTo = $AssignedTo }
+if ($Tags)               { $body.tags = $Tags }
+if ($StoryPoints -gt 0)  { $body.storyPoints = $StoryPoints }
 if ($AcceptanceCriteria) { $body.acceptanceCriteria = $AcceptanceCriteria }
+if ($IterationPath)      { $body.iterationPath = $IterationPath }
+if ($AreaPath)           { $body.areaPath = $AreaPath }
+if ($Parent -gt 0)       { $body.parent = $Parent }
 
 $json = $body | ConvertTo-Json -Compress
 $result = Invoke-RestMethod "$ApiBase/api/workitems/create" -Method POST -ContentType 'application/json' -Body $json
 
 if ($result.ok) {
     Write-Host "`n  Created #$($result.id): $($result.title)" -ForegroundColor Green
+    if ($Parent -gt 0) { Write-Host "  Parent: #$Parent" -ForegroundColor DarkGray }
     if ($result.url) { Write-Host "  $($result.url)" -ForegroundColor DarkGray }
     Write-Host ""
 

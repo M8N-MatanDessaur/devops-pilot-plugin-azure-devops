@@ -1,7 +1,7 @@
 {
   "id": "azure-devops",
   "name": "Azure DevOps",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "sdkVersion": 2,
   "description": "Azure DevOps: work items, iterations, teams, velocity, areas, activity, AB# auto-linking",
   "icon": "kanban",
@@ -153,6 +153,8 @@
       "createRoute": "/api/workitems/create",
       "getRoute": "/api/workitems/:id",
       "updateStateRoute": "/api/workitems/:id/state",
+      "updateRoute": "/api/workitems/:id",
+      "setParentRoute": "/api/workitems/:id/parent",
       "commentRoute": "/api/workitems/:id/comments",
       "iterationsRoute": "/api/iterations",
       "teamsRoute": "/api/teams",
@@ -242,6 +244,13 @@
               },
               "iterationPath": {
                 "type": "string"
+              },
+              "areaPath": {
+                "type": "string"
+              },
+              "parent": {
+                "type": "number",
+                "description": "Parent work item id to nest this item under (creates a Hierarchy link)."
               }
             },
             "required": [
@@ -275,6 +284,29 @@
             "required": [
               "id",
               "state"
+            ]
+          }
+        },
+        {
+          "name": "set_work_item_parent",
+          "description": "Nest a work item under a parent (Hierarchy link). Replaces any existing parent. Gated by permissions.",
+          "route": "POST /api/workitems/:id/parent",
+          "bodyFrom": "arguments",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "description": "Child work item id."
+              },
+              "parent": {
+                "type": "number",
+                "description": "Parent work item id."
+              }
+            },
+            "required": [
+              "id",
+              "parent"
             ]
           }
         }

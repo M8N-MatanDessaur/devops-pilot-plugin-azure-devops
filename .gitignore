@@ -1,0 +1,7 @@
+# Local plugin configuration - contains the Azure DevOps PAT. Never commit.
+config.json
+config.local.json
+
+# Node
+node_modules/
+*.log

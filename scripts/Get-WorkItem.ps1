@@ -12,7 +12,7 @@ if ($wi.error) {
 }
 
 Write-Host ""
-Write-Host "  [$($wi.type)] #$($wi.id) — $($wi.title)" -ForegroundColor Cyan
+Write-Host "  [$($wi.type)] #$($wi.id) - $($wi.title)" -ForegroundColor Cyan
 Write-Host "  State: $($wi.state) | Priority: P$($wi.priority) | Points: $(if($wi.storyPoints){$wi.storyPoints}else{'-'})" -ForegroundColor DarkGray
 Write-Host "  Assigned: $(if($wi.assignedTo){$wi.assignedTo}else{'Unassigned'})" -ForegroundColor DarkGray
 Write-Host "  Iteration: $($wi.iterationPath)" -ForegroundColor DarkGray

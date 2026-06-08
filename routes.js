@@ -101,6 +101,28 @@ module.exports = function register(ctx) {
     });
   }
 
+  // Full ADO REST URL of a work item, used as the target of a Hierarchy relation.
+  function parentWorkItemUrl(parentId) {
+    const cfg = ctx.getConfig();
+    return `https://dev.azure.com/${encodeURIComponent(cfg.AzureDevOpsOrg)}/_apis/wit/workItems/${parseInt(parentId, 10)}`;
+  }
+
+  // Set (or re-parent) a work item's parent. A work item can have only one
+  // parent, so any existing Hierarchy-Reverse relation is removed first.
+  // Removing in reverse index order keeps the remaining indices valid.
+  async function setWorkItemParent(id, parentId) {
+    const wi = await adoRequest('GET', `/wit/workitems/${id}?$expand=relations&api-version=7.1`);
+    const rels = wi.relations || [];
+    const patch = [];
+    for (let i = rels.length - 1; i >= 0; i--) {
+      if (rels[i].rel === 'System.LinkTypes.Hierarchy-Reverse') {
+        patch.push({ op: 'remove', path: `/relations/${i}` });
+      }
+    }
+    patch.push({ op: 'add', path: '/relations/-', value: { rel: 'System.LinkTypes.Hierarchy-Reverse', url: parentWorkItemUrl(parentId) } });
+    return adoRequest('PATCH', `/wit/workitems/${id}?api-version=7.1`, patch, 'application/json-patch+json');
+  }
+
   function proxyHtmlImages(html) {
     if (!html) return html;
     return html.replace(/<img([^>]+)src=["']([^"']+)["']/gi, (match, before, url) => {
@@ -348,11 +370,31 @@ module.exports = function register(ctx) {
           patchDoc.push({ op: 'replace', path, value: val });
         }
       }
-      if (patchDoc.length === 0) return json(res, { error: 'No fields to update' }, 400);
-      const result = await adoRequest('PATCH', `/wit/workitems/${id}?api-version=7.1`, patchDoc, 'application/json-patch+json');
+      const hasParent = body.parent !== undefined && body.parent !== null && body.parent !== '';
+      if (patchDoc.length === 0 && !hasParent) return json(res, { error: 'No fields to update' }, 400);
+      let result;
+      if (patchDoc.length > 0) {
+        result = await adoRequest('PATCH', `/wit/workitems/${id}?api-version=7.1`, patchDoc, 'application/json-patch+json');
+      }
+      // Parent linking goes through setWorkItemParent so an existing parent is
+      // replaced rather than rejected (a work item can have only one parent).
+      if (hasParent) result = await setWorkItemParent(id, body.parent);
       if (swrWorkItems) swrWorkItems.invalidate('wi:');
       if (broadcast) broadcast({ type: 'ui-action', action: 'refresh-workitems' });
-      json(res, { ok: true, id: result.id });
+      json(res, { ok: true, id: (result && result.id) || parseInt(id, 10) });
+    } catch (e) { json(res, { error: e.message }, 502); }
+  }
+
+  async function handleSetParent(req, res, id) {
+    try {
+      if (incognitoGuard && incognitoGuard(res, 'set work item parent')) return;
+      if (permGate && !(await permGate(res, 'api', `POST /api/workitems/${id}/parent`, `Set parent of work item #${id}`))) return;
+      const { parent } = await ctx.readBody(req);
+      if (parent === undefined || parent === null || parent === '') return json(res, { error: 'parent (work item id) is required' }, 400);
+      const result = await setWorkItemParent(id, parent);
+      if (swrWorkItems) swrWorkItems.invalidate('wi:');
+      if (broadcast) broadcast({ type: 'ui-action', action: 'refresh-workitems' });
+      json(res, { ok: true, id: result.id, parent: parseInt(parent, 10) });
     } catch (e) { json(res, { error: e.message }, 502); }
   }
 
@@ -388,7 +430,7 @@ module.exports = function register(ctx) {
     try {
       if (incognitoGuard && incognitoGuard(res, 'create work item')) return;
       if (permGate && !(await permGate(res, 'api', 'POST /api/workitems/create', 'Create work item'))) return;
-      const { type, title, description, priority, tags, assignedTo, iterationPath, storyPoints, acceptanceCriteria } = await ctx.readBody(req);
+      const { type, title, description, priority, tags, assignedTo, iterationPath, areaPath, storyPoints, acceptanceCriteria, parent } = await ctx.readBody(req);
       if (!type || !title) return json(res, { error: 'type and title are required' }, 400);
       const patchDoc = [{ op: 'add', path: '/fields/System.Title', value: sanitizeText(title) }];
       if (description)       patchDoc.push({ op: 'add', path: '/fields/System.Description', value: sanitizeText(description) });
@@ -396,8 +438,10 @@ module.exports = function register(ctx) {
       if (tags)              patchDoc.push({ op: 'add', path: '/fields/System.Tags', value: sanitizeText(tags) });
       if (assignedTo)        patchDoc.push({ op: 'add', path: '/fields/System.AssignedTo', value: assignedTo });
       if (iterationPath)     patchDoc.push({ op: 'add', path: '/fields/System.IterationPath', value: iterationPath });
+      if (areaPath)          patchDoc.push({ op: 'add', path: '/fields/System.AreaPath', value: areaPath });
       if (storyPoints)       patchDoc.push({ op: 'add', path: '/fields/Microsoft.VSTS.Scheduling.StoryPoints', value: parseFloat(storyPoints) });
       if (acceptanceCriteria) patchDoc.push({ op: 'add', path: '/fields/Microsoft.VSTS.Common.AcceptanceCriteria', value: sanitizeText(acceptanceCriteria) });
+      if (parent)            patchDoc.push({ op: 'add', path: '/relations/-', value: { rel: 'System.LinkTypes.Hierarchy-Reverse', url: parentWorkItemUrl(parent) } });
       const wiType = encodeURIComponent(type);
       const result = await adoRequest('POST', `/wit/workitems/$${wiType}?api-version=7.1`, patchDoc, 'application/json-patch+json');
       if (broadcast) broadcast({ type: 'ui-action', action: 'refresh-workitems' });
@@ -621,9 +665,11 @@ module.exports = function register(ctx) {
     const s = subpath || '';
     const mState   = s.match(/^\/(\d+)\/state$/);
     const mComment = s.match(/^\/(\d+)\/comments$/);
+    const mParent  = s.match(/^\/(\d+)\/parent$/);
     const mItem    = s.match(/^\/(\d+)$/);
     if (mState && req.method === 'PATCH') return handleWorkItemState(req, res, mState[1]);
     if (mComment && req.method === 'POST') return handleAddWorkItemComment(req, res, mComment[1]);
+    if (mParent && req.method === 'POST') return handleSetParent(req, res, mParent[1]);
     if (mItem && req.method === 'GET')   return handleWorkItemDetail(req, res, mItem[1]);
     if (mItem && req.method === 'PATCH') return handleUpdateWorkItem(req, res, mItem[1]);
     return false; // not our path -- fall through
